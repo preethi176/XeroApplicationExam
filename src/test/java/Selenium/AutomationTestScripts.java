@@ -93,7 +93,7 @@ public class AutomationTestScripts extends ModulesXero {
 		try{
 		launchBrowser(browserName, URL);
 
-		WebElement username = driver.findElement(By.id("username"));
+		WebElement username = driver.findElement(By.id("email"));
 		enterText(username, "apple.mango@gmail.com", "Username");
 		Thread.sleep(3000);
 		WebElement password = driver.findElement(By.id("password"));
@@ -103,12 +103,12 @@ public class AutomationTestScripts extends ModulesXero {
 			if (clickObj(login, "Login")) {
 				Thread.sleep(5000);
 
-				String actualErrorMsg = driver.findElement(By.xpath(".//[@id='contentTop']/div[2]/div[1]/div[2]/p"))
-						.getText();
+				String actualErrorMsg = driver.findElement(By.xpath("/html/body/div[2]/div/div/div[2]/div[1]/div[2]/p")).getText();
 				InitialDriver.logger.log(Status.PASS,actualErrorMsg + " Error message is verified");
 				if (actualErrorMsg.contains("Your email or password is incorrect")) {
-					status = "pass";
+					
 					InitialDriver.logger.log(Status.PASS,actualErrorMsg + " Error message is verified");
+					status = "pass";
 				} else {
 					InitialDriver.logger.log(Status.FAIL,"Error message is not verified");
 				}
@@ -116,7 +116,7 @@ public class AutomationTestScripts extends ModulesXero {
 			}
 		}
 		}catch(Exception e){
-			InitialDriver.logger.log(Status.INFO,"Unable to thread sleep");
+			InitialDriver.logger.log(Status.FAIL,"Unable to thread sleep");
 		}
 
 		exitBrowser();
@@ -134,6 +134,10 @@ public class AutomationTestScripts extends ModulesXero {
 		if (enterText(un, "User@gmail.com", "Username")) {
 			Thread.sleep(2000);
 
+         WebElement login = driver.findElement(By.id("submitButton"));
+         clickObj(login,"Login");
+			
+
 		WebElement forgotPwd = driver.findElement(By.xpath(".//*[@id='contentTop']/div[2]/div[1]/a"));
 		if (clickObj(forgotPwd, "Forgot Password")) {
 			try {
@@ -149,23 +153,29 @@ public class AutomationTestScripts extends ModulesXero {
 			} else {
 				InitialDriver.logger.log(Status.FAIL," Error message is not verified");
 			}
-			Thread.sleep(3000);
-			WebElement username = driver.findElement(By.xpath(".//[@id='UserName']"));
-			if (enterText(username, "User@gmail.com", "Username")) {
-				Thread.sleep(2000);
+			Thread.sleep(5000);
+			//WebElement username = driver.findElement(By.xpath(".//[@id='UserName']"));
+			//if (enterText(username, "User@gmail.com", "Username")) {
+				//Thread.sleep(2000);
 
-				WebElement sendLink = driver.findElement(By.xpath(".//[@id='submitButton']/a/span"));
+				WebElement sendLink = driver.findElement(By.xpath(".//*[@id='submitButton']/a"));
 				if (clickObj(sendLink, "Send Link")) {
 					Thread.sleep(2000);
 
-					WebElement message = driver.findElement(By.xpath(".//[@id='contentTop']/div/p[1]"));
-					if (validateContent(message, "A link to reset your password has been sent to:User@gmail.com","Message")) {
+					WebElement message = driver.findElement(By.xpath(".//*[@id='contentTop']/div/p[1]"));
+					String actualMessage = message.getText();
+					System.out.println(actualMessage);
+					if (actualMessage.contains("A link to reset your password has been sent to")){
+						InitialDriver.logger.log(Status.PASS, actualMessage + " message is verified");
+					}
+					else{
+						InitialDriver.logger.log(Status.FAIL, " message is not verified");
 						Thread.sleep(2000);
 						status = "pass";
 
 					}
 				}
-			}
+			
 			
 		}
 		
@@ -173,7 +183,7 @@ public class AutomationTestScripts extends ModulesXero {
 		}
 		}
 catch(Exception e){
-	InitialDriver.logger.log(Status.INFO,"Unable to thread sleep");
+	InitialDriver.logger.log(Status.FAIL,"Unable to thread sleep");
 }
 		exitBrowser();
 		writeDataInXl(i, mapToBrowser(browserName), status);
@@ -185,7 +195,7 @@ catch(Exception e){
 			throws InterruptedException {
 		String status = "fail";
 		launchBrowser(browserName, URL);
-		InitialDriver.logger.log(Status.INFO,"browser opened");
+	
 		freeTrialPage();
 		InitialDriver.logger.log(Status.INFO,"Free Trial page is  opened");
 
@@ -237,6 +247,7 @@ catch(Exception e){
 	public void SignUpToXDC_TC02_B(String UserName, String Password, String URL, String browserName, int i)
 			throws InterruptedException {
 		String status = "fail";
+		try{
 		launchBrowser(browserName, URL);
 
 		freeTrialPage();
@@ -244,56 +255,58 @@ catch(Exception e){
 		WebElement getStarted = driver.findElement(By.xpath("/html/body/div[6]/main/div[1]/div/div/form/div[9]/span"));
 		if (clickObj(getStarted, "GetStarted")) {
 
-			WebElement errorMsg1 = driver.findElement(By.xpath(".//[@id='signup-form-error-message-1']"));
+			WebElement errorMsg1 = driver.findElement(By.xpath(".//*[@id='signup-form-error-message-1']"));
 			String actual1 = errorMsg1.getText();
-			if (actual1.contains("First name can't be empty")) {
-				InitialDriver.logger.log(Status.PASS,actual1 + "FirstName Error message is verified");
-			} else {
-				InitialDriver.logger.log(Status.FAIL,"FirstName Error message is not verified");
-			}
+			System.out.println(actual1);
+			if (actual1.equalsIgnoreCase("First name can't be empty")) {
+				InitialDriver.logger.log(Status.PASS,actual1 + " Error message is verified");
+			
 			Thread.sleep(1000);
-			WebElement errorMsg2 = driver.findElement(By.xpath(".//[@id='signup-form-error-message-2']"));
+			WebElement errorMsg2 = driver.findElement(By.xpath(".//*[@id='signup-form-error-message-2']"));
 			String actual2 = errorMsg2.getText();
-			if (actual2.contains("Last name can't be empty")) {
+			System.out.println(actual2);
+			if (actual2.equalsIgnoreCase("Last name can't be empty")) {
 				InitialDriver.logger.log(Status.PASS,actual2 + "LastNAme Error message is verified");
-			} else {
-				InitialDriver.logger.log(Status.FAIL,"LastNAme Error message is not verified");
-			}
+			
 			Thread.sleep(1000);
-			WebElement errorMsg3 = driver.findElement(By.xpath(".//[@id='signup-form-error-message-3']"));
+			WebElement errorMsg3 = driver.findElement(By.xpath(".//*[@id='signup-form-error-message-3']"));
 			String actual3 = errorMsg3.getText();
-			if (actual3.contains("Email address can't be empty")) {
+			
+			if (actual3.equalsIgnoreCase("Email address can't be empty")) {
 				InitialDriver.logger.log(Status.PASS,actual3 + "Email Error message is verified");
-			} else {
-				InitialDriver.logger.log(Status.FAIL,"Email Error message is not verified");
-			}
+			
 			Thread.sleep(1000);
 
-			WebElement errorMsg4 = driver.findElement(By.xpath(".//[@id='signup-form-error-message-4']"));
+			WebElement errorMsg4 = driver.findElement(By.xpath(".//*[@id='signup-form-error-message-4']"));
 			String actual4 = errorMsg4.getText();
-			if (actual4.contains("Phone number")) {
+			
+			if (actual4.equalsIgnoreCase("Phone number can't be empty")) {
 				InitialDriver.logger.log(Status.PASS,actual4 + "Phone Number Error message is verified");
-			} else {
-				InitialDriver.logger.log(Status.FAIL,"Phone Number Error message is not verified");
-			}
+			
 			Thread.sleep(1000);
 
 			WebElement emailAddress = driver
 					.findElement(By.xpath("html/body/div[6]/main/div[1]/div/div/form/div[4]/label/input"));
 			if (enterText(emailAddress, "apple", "Email Address")) {
-				String actualMsg = driver.findElement(By.xpath(".//[@id='signup-form-error-message-3']")).getText();
-				if (actualMsg.contains("Email address is invalid")) {
+				String actualMsg = driver.findElement(By.xpath(".//*[@id='signup-form-error-message-3']")).getText();
+				
+				if (actualMsg.equalsIgnoreCase("Email address is invalid")) {
 					status = "pass";
-					InitialDriver.logger.log(Status.PASS,actualMsg + " Email addressError message is verified");
-				} else {
-					InitialDriver.logger.log(Status.FAIL,"email address Error message is not verified");
-				}
+
 				Thread.sleep(1000);
 
 				// WebElement checkbox =
 				// driver.findElement(By.xpath("html/body/div[6]/main/div[1]/div/div/form/div[8]/div"));
 				// checkbox.isEnabled();
 			}
+			}
+			}
+			}
+			}
+			}
+		}
+		}catch(Exception e){
+			InitialDriver.logger.log(Status.FAIL, "Error Mesaages are not verified");
 		}
 		exitBrowser();
 		writeDataInXl(i, mapToBrowser(browserName), status);
@@ -416,28 +429,11 @@ catch(Exception e){
 			launchBrowser(browserName, URL);
 
 			Thread.sleep(2000);
+                   LoginPage(UserName,Password);
 
-			WebElement username = driver.findElement(By.xpath(".//[@id='email']"));
-			if (enterText(username, UserName, "Username")) {
+						
 
-				Thread.sleep(1000);
-
-				WebElement password = driver.findElement(By.xpath(".//[@id='password']"));
-				if (enterText(password, Password, "Password")) {
-
-					Thread.sleep(1000);
-
-					WebElement login = driver.findElement(By.xpath(".//[@id='submitButton']"));
-					if (clickObj(login, "Login")) {
-
-						Thread.sleep(2000);
-
-						String trial = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[1]/p")).getText();
-						String expect = "You are currently using a trial account.";
-						if (trial.contains(expect)) {
-							InitialDriver.logger.log(Status.PASS, trial + "  message is verified");
-
-							WebElement dashboard = driver.findElement(By.xpath("//[@id=\"Dashboard\"]"));
+							WebElement dashboard = driver.findElement(By.xpath(".//*[@id='Dashboard']"));
 							if (clickObj(dashboard, "Dashboard")) {
 
 								Thread.sleep(1000);
@@ -446,76 +442,76 @@ catch(Exception e){
 								if (DashboardPage.contains(expected)) {
 									InitialDriver.logger.log(Status.PASS,DashboardPage + "  message is verified");
 
-									WebElement account = driver.findElement(By.xpath("//[@id=\"Accounts\"]"));
+									WebElement account = driver.findElement(By.xpath(".//*[@id='Accounts']"));
 									if (clickObj(account, "Accounts")) {
 
 										Thread.sleep(1000);
 
-										WebElement report = driver.findElement(By.xpath("//[@id=\"Reports\"]"));
+										WebElement report = driver.findElement(By.xpath(".//*[@id='Reports']"));
 										if (clickObj(report, "Reports")) {
 
 											Thread.sleep(1000);
 
-											WebElement contact = driver.findElement(By.xpath("//[@id=\"Contacts\"]"));
+											WebElement contact = driver.findElement(By.xpath(".//*[@id='Contacts']"));
 											if (clickObj(contact, "Contacts")) {
 
 												Thread.sleep(1000);
 												WebElement setting = driver
-														.findElement(By.xpath("//[@id=\"Settings\"]"));
+														.findElement(By.xpath(".//*[@id='Settings']"));
 												if (clickObj(setting, "Settings")) {
 
 													Thread.sleep(1000);
 
 													WebElement plus = driver
-															.findElement(By.xpath("//[@id=\"quicklaunchTab\"]"));
+															.findElement(By.xpath(".//*[@id='quicklaunchTab']"));
 													if (clickObj(plus, "+/New")) {
 
 														Thread.sleep(1000);
 
 														WebElement file = driver.findElement(By.xpath(
-																"/html/body/div[1]/div/div/div[2]/div[2]/div[2]/ul/li[2]/a"));
+																".//*[@id='xero-nav']/div[2]/div[2]/div[2]/ul/li[2]/a"));
 														if (clickObj(file, "File")) {
 
 															Thread.sleep(1000);
 
 															WebElement notification = driver.findElement(By.xpath(
-																	"/html/body/div[1]/div/div/div[2]/div[2]/div[2]/ul/li[3]/a"));
+																	".//*[@id='xero-nav']/div[2]/div[2]/div[2]/ul/li[3]/a"));
 															if (clickObj(notification, "notification")) {
 
 																Thread.sleep(2000);
 
 																WebElement Search = driver.findElement(By.xpath(
-																		"/html/body/div[1]/div/div/div[2]/div[2]/div[2]/ul/li[4]/a"));
+																		".//*[@id='xero-nav']/div[2]/div[2]/div[2]/ul/li[4]/a"));
 																if (clickObj(Search, "Search")) {
 
 																	Thread.sleep(3000);
 
 																	WebElement Searchbar = driver.findElement(
-																			By.xpath(".//[@id='placeholder']"));
+																			By.xpath(".//*[@id='placeholder']"));
 																	if (clickObj(Searchbar, "Searchbar")) {
 
 																		Thread.sleep(2000);
 
 																		WebElement help = driver.findElement(By.xpath(
-																				"/html/body/div[1]/div/div/div[2]/div[2]/div[2]/ul/li[5]/a"));
+																				".//*[@id='xero-nav']/div[2]/div[2]/div[2]/ul/li[5]/a"));
 																		if (clickObj(help, "Help")) {
 
 																			WebElement helpfield = driver.findElement(
-																					By.xpath("//*[@id=\"menu_help\"]"));
+																					By.xpath(".//*[@id='menu_help']"));
 																			if (helpfield.isDisplayed()) {
 																				System.out.println(
 																						"Pass: help field is displayed");
 
 																				WebElement helpcenter = driver
 																						.findElement(By.xpath(
-																								"/html/body/div[1]/div/div/div[2]/div[2]/div[2]/ul/li[5]/div/div/div/ul/li[1]/a]"));
+																								".//*[@id='rt']/ul/li[1]/a"));
 																				if (helpcenter.isDisplayed()) {
 																					System.out.println(
 																							"Pass: help center is displayed");
 
 																					WebElement getHelp = driver
 																							.findElement(By.xpath(
-																									"//[@id=\"get_help\"]]"));
+																									".//*[@id='get_help']"));
 																					if (getHelp.isDisplayed()) {
 																						System.out.println(
 																								"Pass: get Help is displayed");
@@ -543,10 +539,10 @@ catch(Exception e){
 									}
 								}
 							}
-						}
-					}
-				}
-			}
+						
+					
+				
+			
 		} catch (Exception e) {
 			System.out.println("Unable to locate element");
 		}
@@ -561,38 +557,26 @@ catch(Exception e){
 			throws InterruptedException {
 		String status = "fail";
 		launchBrowser(browserName, URL);
+		Thread.sleep(2000);
 
-		WebElement username = driver.findElement(By.xpath(".//[@id='email']"));
-		if (enterText(username, UserName, "Username")) {
-
-			Thread.sleep(1000);
-
-			WebElement password = driver.findElement(By.xpath(".//[@id='password']"));
-			if (enterText(password, Password, "Password")) {
-
-				Thread.sleep(1000);
-
-				WebElement login = driver.findElement(By.xpath(".//[@id='submitButton']"));
-				if (clickObj(login, "Login")) {
-
-					Thread.sleep(2000);
+		LoginPage(UserName,Password);
 
 					WebElement userMenu = driver
-							.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div[1]/div[2]/a"));
+							.findElement(By.xpath(".//*[@id='xero-nav']/div[2]/div[1]/div[2]/a"));
 					if (clickObj(userMenu, "User Menu Drop Down")) {
 
 						Thread.sleep(2000);
 
 						WebElement logout = driver
-								.findElement(By.xpath(".//[@id='xero-nav']/div[2]/div[1]/div[2]/div/ul/li[3]/a"));
+								.findElement(By.xpath(".//*[@id='xero-nav']/div[2]/div[1]/div[2]/div/ul/li[3]/a"));
 						if (clickObj(logout, "Logout")) {
 
 							Thread.sleep(2000);
 
 							String logoutMessage = driver
-									.findElement(By.xpath("/html/body/div[2]/div/div/div[2]/div[1]/h2")).getText();
+									.findElement(By.xpath(".//*[@id='contentTop']/div[2]/div[1]/h2")).getText();
 							String exp = "Welcome to Xero";
-							if (logoutMessage.equals(exp)) {
+							if (logoutMessage.equalsIgnoreCase("Welcome to Xero")){
 								status = "pass";
 								InitialDriver.logger.log(Status.PASS,logoutMessage + "  message is verified");
 
@@ -601,10 +585,7 @@ catch(Exception e){
 							}
 						}
 					}
-				}
-			}
-		}
-
+				
 		exitBrowser();
 
 		writeDataInXl(i, mapToBrowser(browserName), status);
@@ -664,7 +645,7 @@ catch(Exception e){
 		
 		
 		}catch (Exception e) {
-			InitialDriver.logger.log(Status.INFO,"Unable to thread sleep");
+			InitialDriver.logger.log(Status.FAIL,"Unable to thread sleep");
 		}
 		
 		
@@ -678,6 +659,7 @@ catch(Exception e){
 	public void AddOrganisationTrailVersion_TC08_A(String UserName, String Password, String URL, String browserName,
 			int i) throws InterruptedException {
 		String status = "fail";
+		try{
 		launchBrowser(browserName, URL);
 
 		Thread.sleep(1000);
@@ -685,9 +667,20 @@ catch(Exception e){
 		LoginPage(UserName, Password);
 		Thread.sleep(4000);
 		AddAnOrganisation();
-		WebElement startTrial = driver.findElement(By.xpath(".//[@id='simplebutton-1035']"));
+		Thread.sleep(4000);
+		WebElement startTrial = driver.findElement(By.xpath(".//*[@id='simplebutton-1035']"));
 		if (clickObj(startTrial, "Start Trial")) {
-			status = "pass";
+			
+			Thread.sleep(8000);
+			
+			String expect=driver.getTitle();
+			if(expect.equalsIgnoreCase("Dashboard")){
+				InitialDriver.logger.log(Status.PASS, expect + " message is verified");
+				status = "pass";
+			}
+		}
+		}catch(Exception e){
+			InitialDriver.logger.log(Status.FAIL,"Unable to thread sleep");
 		}
 
 		exitBrowser();
@@ -705,7 +698,10 @@ catch(Exception e){
 		LoginPage(UserName, Password);
 		Thread.sleep(4000);
 		AddAnOrganisation();
+		Thread.sleep(3000);
 		clickBuyNow();
+		Thread.sleep(3000);
+		status="pass";
 		exitBrowser();
 		writeDataInXl(i, mapToBrowser(browserName), status);
 		setXlColorStyle(i, mapToBrowser(browserName), status);
@@ -723,21 +719,20 @@ catch(Exception e){
 			LoginPage(UserName, Password);
 			Thread.sleep(4000);
 			AddAnOrganisation();
+			Thread.sleep(3000);
 			clickBuyNow();
+			Thread.sleep(4000);
 
-			WebElement starterPlan = driver.findElement(By.xpath(".//[@id='PRODUCTOPTION/ORG/SOLO']/div[1]/label"));
+			WebElement starterPlan = driver.findElement(By.xpath(".//*[@id='PRODUCTOPTION/ORG/SOLO']/div[1]/label"));
 			if (clickObj(starterPlan, "Starter Plan")) {
 				status="pass";
-				Thread.sleep(2000);
+				Thread.sleep(4000);
 
 				testData();
-
-				exitBrowser();
-				writeDataInXl(i, mapToBrowser(browserName), status);
-				setXlColorStyle(i, mapToBrowser(browserName), status);
+				Thread.sleep(5000);
 			}
 		} catch (Exception e) {
-			InitialDriver.logger.log(Status.INFO,"Unable to thread sleep");
+			InitialDriver.logger.log(Status.FAIL,"Unable to thread sleep");
 		}
 
 		exitBrowser();
@@ -756,20 +751,24 @@ catch(Exception e){
 			LoginPage(UserName, Password);
 			Thread.sleep(4000);
 			AddAnOrganisation();
+			Thread.sleep(3000);
 			clickBuyNow();
+			Thread.sleep(3000);
 
-			WebElement standardPlan = driver
-					.findElement(By.xpath(".//[@id='PRODUCTOPTION/ORG/STANDARD']/div[1]/label"));
-			if (clickObj(standardPlan, " Standard Plan")) {
+		//	WebElement standardPlan = driver
+				//	.findElement(By.xpath(".//[@id='PRODUCTOPTION/ORG/STANDARD']/div[1]/label"));
+			//if (clickObj(standardPlan, " Standard Plan")) {
+			testData();
+				status = "pass";
 				Thread.sleep(2000);
 
-				testData();
+				
 
-			}
-			status = "pass";
+			
+			
 
 		} catch (Exception e) {
-			System.out.println("unable to thread");
+			InitialDriver.logger.log(Status.FAIL,"Unable to thread sleep");
 		}
 
 			exitBrowser();
@@ -789,20 +788,22 @@ catch(Exception e){
 			LoginPage(UserName, Password);
 			Thread.sleep(4000);
 			AddAnOrganisation();
+			Thread.sleep(2000);
 			clickBuyNow();
 
-			WebElement premium = driver.findElement(By.xpath(".//[@id='PRODUCTOPTION/ORG/PRO']/div[1]/label"));
+			WebElement premium = driver.findElement(By.xpath(".//*[@id='PRODUCTOPTION/ORG/PRO']/div[1]/label"));
 			if (clickObj(premium, "Premium")) {
+				Thread.sleep(3000);
+			
+			testData();
+				status = "pass";
 
 				Thread.sleep(2000);
-
-				testData();
-				status = "pass";
 
 			}
 
 		} catch (Exception e) {
-			System.out.println("unable to thread");
+			InitialDriver.logger.log(Status.FAIL,"Unable to thread sleep");
 		}
 
 			exitBrowser();
@@ -819,12 +820,13 @@ catch(Exception e){
 			LoginPage(UserName, Password);
 			Thread.sleep(4000);
 			AddAnOrganisation();
+			Thread.sleep(4000);
 			
-			WebElement convertData = driver.findElement(By.xpath(".//[@id='conversionLink']"));
+			WebElement convertData = driver.findElement(By.xpath(".//*[@id='conversionLink']"));
 			if(clickObj(convertData," Convert Data")){
 				Thread.sleep(2000);
 				
-				WebElement checkbox = driver.findElement(By.xpath(".//[@id='conversionCheckbox-inputEl']"));
+				WebElement checkbox = driver.findElement(By.xpath(".//*[@id='conversionCheckbox-inputEl']"));
 				if(selectCheckBox(checkbox,"Want to convert Data")){
 					
 					Thread.sleep(2000);
@@ -834,7 +836,7 @@ catch(Exception e){
 					Thread.sleep(4000);
 					WebElement text = driver.findElement(By.xpath(".//[@id='tbtext-1045']"))	;
 					String actualText = text.getText();
-					if(actualText.contains("QuickBooks file conversion")){
+					if(actualText.equalsIgnoreCase("New Organisation")){
 						InitialDriver.logger.log(Status.PASS,actualText + "  message is verified");
 					status="pass";
 					}
@@ -846,7 +848,7 @@ catch(Exception e){
 		}
 				
 	catch(Exception e){
-		InitialDriver.logger.log(Status.INFO,"Unable to thread sleep");
+		InitialDriver.logger.log(Status.FAIL,"Unable to thread sleep");
 	}
 		exitBrowser();
 		writeDataInXl(i, mapToBrowser(browserName), status);

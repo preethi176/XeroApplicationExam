@@ -22,7 +22,7 @@ public class InitialDriver extends ModulesXero{
 	extent = ModulesXero.extentReport("E:/selenium/XeroSeleniumExam/ExtentReports/NewReport.html");
 	String firefoxStatus, ChromeStatus, ieStatus;
 
-	for (int i = 1;i < recData.length; i++) {
+	for (int i = 1;i< recData.length; i++) {
 
 		if (recData[i][1].equalsIgnoreCase("Y")) {
 			firefoxStatus = recData[i][2];
@@ -58,6 +58,8 @@ public class InitialDriver extends ModulesXero{
 				}
 
 			}
+			closeReport(extent);
+			extent.flush();
 			
 
 			if (ChromeStatus.equalsIgnoreCase("Y")) {

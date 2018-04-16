@@ -85,6 +85,8 @@ public class ModulesXero extends ReUsableMethods {
 		return driver;
 	}
 public void LoginPage(String UserName,String Password){
+	String status="fail";
+	try{
 	WebElement username = driver.findElement(By.id("email"));
 	 enterText(username, UserName, "EmailAddress");
 
@@ -102,27 +104,36 @@ public void LoginPage(String UserName,String Password){
 			String actual = driver.getTitle();
 			if(actual.contains("Xero")){
 				InitialDriver.logger.log(Status.PASS,actual + " page is verified");
+				status="pass";
 			}
-			else{
-				InitialDriver.logger.log(Status.FAIL,"page is not verified");
-			}
+			
+			
+	}catch(Exception e){
+			InitialDriver.logger.log(Status.FAIL,"page is not verified");
+	}
 	
 	
 }
 public void clickBuyNow() throws InterruptedException{
+	String status="fail";
+	try{
 	WebElement buyNow = driver.findElement(By.xpath(".//*[@id='simplebutton-1036']"));
 	if(clickObj(buyNow,"Buy Now")){
 		Thread.sleep(6000);
 		String actual = driver.getTitle();
 		if(actual.contains("Pricing Plan")){
 			InitialDriver.logger.log(Status.PASS,actual + " page is verified");
+			status="pass";
+			Thread.sleep(4000);
 			
 		}
-		else{
-			InitialDriver.logger.log(Status.FAIL,"page is not verified");
-		}
 	}
+		}
+	catch(Exception e){
+		InitialDriver.logger.log(Status.FAIL,"page is not verified");
 }
+	}
+
 public void testData(){
 	String status = "fail";
 	try{
@@ -148,6 +159,7 @@ public void testData(){
 						if(actualTitle.contains("Confirm")){
 							InitialDriver.logger.log(Status.PASS,actualTitle + " page is verified");
 							status="pass";
+							Thread.sleep(3000);
 				
 						}
 						else{
@@ -161,7 +173,7 @@ public void testData(){
 	}
 	}
 	catch (Exception e) {
-		InitialDriver.logger.log(Status.INFO,"Unable to thread sleep");
+		InitialDriver.logger.log(Status.FAIL,"Unable to thread sleep");
 }
 
 }
@@ -282,6 +294,8 @@ public void testData(){
 					.findElement(By.xpath(".//*[@id='xero-nav']/div[2]/div[1]/div[1]/div/div/div[1]/a"));
 			if (clickObj(xero, "Xero")) {
 				Thread.sleep(3000);
+		
+	
 
 				WebElement addOrganisation = driver.findElement(By.xpath(".//*[@id='ext-gen1043']"));
 				if (clickObj(addOrganisation, "Add an Organisation")) {
@@ -293,14 +307,17 @@ public void testData(){
 						WebElement where = driver.findElement(By.xpath(".//*[@id='countryCmb-inputEl']"));
 						clickObj(where,"Country");
 						clear(where, "Country");
+						Thread.sleep(1000);
 						if (enterText(where, "United States", "Country")) {
 					WebElement country = driver.findElement(By.xpath(".//*[@id='countryCmb-boundlist-listEl']/ul/li[1]"));
 			
 						clickObj(country,"Country");
+						Thread.sleep(2000);
 
 							WebElement timeZone = driver.findElement(By.xpath(".//*[@id='cmbTimeZone-inputEl']"));
 							clickObj(timeZone,"Time Zone");
 							clear(timeZone, "Time Zone");
+							Thread.sleep(1000);
 							if (enterText(timeZone, "(UTC-08:00) Pacific Time (US & Canada)", "Time Zone")) {
 								WebElement time = driver.findElement(By.xpath(".//*[@id='cmbTimeZone-boundlist-listEl']/ul/li"));
 								clickObj(time,"TimeZone");
@@ -310,6 +327,7 @@ public void testData(){
 								WebElement what = driver
 										.findElement(By.xpath(".//*[@id='industrysearchcombofield-1025-inputEl']"));
 								clickObj(what,"What does Organisation do");
+								Thread.sleep(1000);
 								if (enterText(what, "Accounting", "What does your organisation do")) {
 									WebElement organisation = driver.findElement(By.xpath(".//*[@id='industrysearchcombofield-1025-boundlist-listEl']/div/ul/li[3]"));
 									clickObj(organisation,"What does your Organisation do");
@@ -326,7 +344,7 @@ public void testData(){
 				
 		
 	}catch (Exception e) {
-		InitialDriver.logger.log(Status.INFO,"Unable to thread sleep");
+		InitialDriver.logger.log(Status.FAIL,"Unable to thread sleep");
 }
 	}
 
